@@ -60,6 +60,10 @@ class RecipeApp:
         )
         self.search_button.place(x=584.0, y=81.0, width=42.0, height=38.)
 
+        self.search_entry.bind("<Return>", self.__on_enter_pressed)
+
+        
+
         def load_image(file_path, size=(278, 92)):  # Size is optional, adjust according to your needs
             img = Image.open(file_path)
             img = img.resize(size)  # Resize the image to fit the button
@@ -186,7 +190,9 @@ class RecipeApp:
         )
 
 
-         
+    def __on_enter_pressed(self, event):
+        self.__run_search_query()
+     
 
     def __run_search_query(self):
         query = self.search_entry.get()
