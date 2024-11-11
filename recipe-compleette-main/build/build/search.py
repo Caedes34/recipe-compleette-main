@@ -64,9 +64,9 @@ class RecipeApp:
 
         
 
-        def load_image(file_path, size=(278, 92)):  # Size is optional, adjust according to your needs
+        def load_image(file_path, size=(278, 92)): 
             img = Image.open(file_path)
-            img = img.resize(size)  # Resize the image to fit the button
+            img = img.resize(size)  
             return ImageTk.PhotoImage(img)
 
         button_image_1 = load_image(relative_to_assets("button_1.png"))
@@ -92,18 +92,18 @@ class RecipeApp:
             highlightthickness=0,
             command=lambda: print("button_2 clicked"),
             relief="flat",
-            bg="#A46D6D",  # Set to match the canvas background color
-            activebackground="#A46D6D",  # Set to match the canvas background color
-            bd=0,  # Set border width to 0
-            padx=0,  # Remove horizontal padding
-            pady=0   # Remove vertical padding
+            bg="#A46D6D", 
+            activebackground="#A46D6D",  
+            bd=0,  
+            padx=0, 
+            pady=0   
         )
         button_2.image = button_image_2
         button_2.place(
             x=47.0,
             y=240.0,
-            width=278.0,  # Adjusted width
-            height=92.0  # Adjusted height
+            width=278.0,  
+            height=92.0  
         )
 
         button_image_3 = load_image(relative_to_assets("button_3.png"))
@@ -113,18 +113,18 @@ class RecipeApp:
             highlightthickness=0,
             command=lambda: print("button_3 clicked"),
             relief="flat",
-            bg="#A46D6D",  # Set to match the canvas background color
-            activebackground="#A46D6D",  # Set to match the canvas background color
-            bd=0,  # Set border width to 0
-            padx=0,  # Remove horizontal padding
-            pady=0   # Remove vertical padding
+            bg="#A46D6D",  
+            activebackground="#A46D6D",  
+            bd=0,  
+            padx=0,  
+            pady=0  
         )
         button_3.image = button_image_3
         button_3.place(
             x=47.0,
             y=359.0,
-            width=278.0,  # Adjusted width
-            height=92.0  # Adjusted height
+            width=278.0,  
+            height=92.0  
         )
 
         button_image_4 = load_image(relative_to_assets("button_4.png"))
@@ -135,18 +135,18 @@ class RecipeApp:
             highlightthickness=0,
             command=lambda: print("button_4 clicked"),
             relief="flat",
-            bg="#A46D6D",  # Set to match the canvas background color
-            activebackground="#A46D6D",  # Set to match the canvas background color
-            bd=0,  # Set border width to 0
-            padx=0,  # Remove horizontal padding
-            pady=0   # Remove vertical padding
+            bg="#A46D6D",  
+            activebackground="#A46D6D",
+            bd=0,  
+            padx=0,  
+            pady=0   
         )
         button_4.image = button_image_4
         button_4.place(
             x=395.0,
             y=132.0,
-            width=278.0,  # Adjusted width
-            height=92.0  # Adjusted height
+            width=278.0,  
+            height=92.0  
         )
 
         button_image_5 =  load_image(relative_to_assets("button_5.png"))
@@ -156,18 +156,18 @@ class RecipeApp:
             highlightthickness=0,
             command=lambda: print("button_5 clicked"),
             relief="flat",
-            bg="#A46D6D",  # Set to match the canvas background color
-            activebackground="#A46D6D",  # Set to match the canvas background color
-            bd=0,  # Set border width to 0
-            padx=0,  # Remove horizontal padding
-            pady=0   # Remove vertical padding
+            bg="#A46D6D",  
+            activebackground="#A46D6D",  
+            bd=0, 
+            padx=0,  
+            pady=0   
         )
         button_5.image = button_image_5
         button_5.place(
             x=395.0,
             y=248.0,
-            width=278.0,  # Adjusted width
-            height=92.0  # Adjusted height
+            width=278.0,  
+            height=92.0  
         )
 
         button_image_6 =  load_image(relative_to_assets("button_6.png"))
@@ -177,21 +177,21 @@ class RecipeApp:
             highlightthickness=0,
             command=lambda: print("button_6 clicked"),
             relief="flat",
-            bg="#A46D6D",  # Set to match the canvas background color
-            activebackground="#A46D6D",  # Set to match the canvas background color
-            bd=0,  # Set border width to 0
-            padx=0,  # Remove horizontal padding
-            pady=0   # Remove vertical padding
+            bg="#A46D6D",  
+            activebackground="#A46D6D",  
+            bd=0,  
+            padx=0,  
+            pady=0   
         )
         button_6.image = button_image_6
         button_6.place(
             x=395.0,
             y=355.0,
-            width=278.0,  # Adjusted width
-            height=92.0  # Adjusted height
+            width=278.0,  
+            height=92.0  
         )
 
-
+    #BACK END STUFFS
     def __on_enter_pressed(self, event):
         self.__run_search_query()
      
@@ -228,7 +228,7 @@ class RecipeApp:
         content_frame = Frame(canvas, bg="#3E2929")
         canvas.create_window((0, 0), window=content_frame, anchor="nw")
 
-        # Add recipe content to the canvas
+       
         if recipe:
             recipe_image = recipe['image']
             recipe_url = recipe.get('sourceUrl', "")
@@ -252,12 +252,12 @@ class RecipeApp:
             no_recipe_label.grid(column=1, row=4, pady=10)
 
 
-            # Display an image if no recipe is found (you can use a placeholder image)
-            placeholder_image_url = "https://www.creta-gel.com/page-404.html"  # Replace with your placeholder image URL
+            
+            placeholder_image_url = "https://www.creta-gel.com/page-404.html"  
             self.__show_image(content_frame, placeholder_image_url)
 
-        # Update the scroll region to enable scrolling
-        content_frame.update_idletasks()  # Ensure the content is fully rendered
+        
+        content_frame.update_idletasks()  
         canvas.config(scrollregion=canvas.bbox("all"))
 
     def __get_recipe(self, query):
@@ -286,7 +286,7 @@ class RecipeApp:
         image = ImageTk.PhotoImage(img)
 
         holder = Label(frame, image=image)
-        holder.photo = image  # Keep a reference to avoid garbage collection
+        holder.photo = image  
         holder.grid(column=1, row=6, pady=10)
         
 
@@ -318,6 +318,6 @@ def relative_to_assets(path: str) -> Path:
 
 # Main execution
 if __name__ == "__main__":
-    recipe_app_key = "8b4d854f3bb446afa28109f20019f126"  # Replace with your Spoonacular API Key
+    recipe_app_key = "8b4d854f3bb446afa28109f20019f126"  
     recipe_app = RecipeApp(recipe_app_key)
     recipe_app.run_app()
