@@ -1,4 +1,4 @@
-import requests
+import requests 
 import webbrowser
 from io import BytesIO
 from PIL import Image, ImageTk
@@ -259,6 +259,108 @@ class RecipeApp:
         
         content_frame.update_idletasks()  
         canvas.config(scrollregion=canvas.bbox("all"))
+     # Handle the enter key event
+    def __on_enter_pressed(self, event):
+        self.__run_search_query()
+
+    # Handle search query and display results
+    def __run_search_query(self):
+        query = self.search_entry.get()
+        recipes = self.__get_recipes(query)
+
+        # Show results in a new window
+        if recipes:
+            self.__open_results_window(recipes)
+        else:
+            self.__open_results_window([], message="No recipes found for your search.")
+
+    # Open the results window with a list of recipes
+    def __open_results_window(self, recipes, message=""):
+        result_window = Toplevel(self.main_window)
+        result_window.geometry("1441x800")
+        result_window.configure(bg="#3E2929")
+
+        frame = Frame(result_window)
+        frame.pack(fill="both", expand=True)
+
+        canvas = Canvas(frame, bg="#3E2929", bd=0, highlightthickness=0, relief="ridge")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        scrollbar = Scrollbar(frame, orient="vertical", command=canvas.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        canvas.config(yscrollcommand=scrollbar.set)
+
+        content_frame = Frame(canvas, bg="#3E2929")
+        canvas.create_window((0, 0), window=content_frame, anchor="nw")
+
+        if recipes:
+            # Display a list of recipes
+            for index, recipe in enumerate(recipes):
+                self.__create_recipe_button(content_frame, recipe, index)
+        else:
+            no_recipe_label = Label(content_frame, text=message, bg="#3E2929", fg="white")
+            no_recipe_label.grid(column=1, row=4, pady=10)
+
+        content_frame.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
+
+    # Create a button for each recipe in the list
+    def __create_recipe_button(self, frame, recipe, index):
+        button = Button(frame, text=recipe['title'], command=lambda r=recipe: self.__open_recipe_details(r))
+        button.grid(column=1, row=index, pady=5)
+
+    # Open the recipe details when a recipe is selected
+    def __open_recipe_details(self, recipe):
+        recipe_window = Toplevel(self.main_window)
+        recipe_window.geometry("1441x800")
+        recipe_window.configure(bg="#3E2929")
+
+        content_frame = Frame(recipe_window, bg="#3E2929")
+        content_frame.pack(fill="both", expand=True)
+
+        self.__show_image(content_frame, recipe['image'])
+
+        self.__get_ingredients(content_frame, recipe)
+
+        # Recipe link button
+        def __open_link():
+            webbrowser.open(recipe.get('sourceUrl', ''))
+        recipe_button = Button(content_frame, text="Recipe Link", highlightbackground="#ea86b6", command=__open_link)
+        recipe_button.grid(column=1, row=7, pady=10)
+
+    # Get multiple recipes based on query
+    def __get_recipes(self, query):
+        url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&apiKey={self.recipe_app_key}"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+            return data.get('results', [])
+        return []
+
+    def __show_image(self, frame, image_url):
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+        img = img.resize((RECIPE_IMAGE_WIDTH, RECIPE_IMAGE_HEIGHT))
+        image = ImageTk.PhotoImage(img)
+
+        holder = Label(frame, image=image)
+        holder.photo = image
+        holder.grid(column=1, row=6, pady=10)
+
+    def __get_ingredients(self, frame, recipe):
+        ingredients_text = Text(frame, height=15, width=50, bg="#ffdada")
+        ingredients_text.grid(column=1, row=4, pady=10)
+        ingredients_text.delete("1.0", "end")
+
+        ingredients_text.insert("end", "\n" + recipe['title'] + "\n")
+        ingredients_text.insert("end", f"\nServings: {recipe['servings']}\n")
+        ingredients_text.insert("end", f"\nReady in: {recipe['readyInMinutes']} minutes\n")
+
+        if 'extendedIngredients' in recipe:
+            for ingredient in recipe['extendedIngredients']:
+                ingredients_text.insert("end", "\n- " + ingredient['original'])    
 
     def __get_recipe(self, query):
         url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&apiKey={self.recipe_app_key}"
