@@ -3,7 +3,6 @@ import webbrowser
 from io import BytesIO
 from PIL import Image, ImageTk
 from pathlib import Path
-from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Label, Toplevel, Scrollbar, Frame
 
 # Constants for recipe image dimensions
@@ -18,11 +17,11 @@ class RecipeApp:
         # Main Window
         self.main_window = Tk()
         self.main_window.geometry("747x504")
-        self.main_window.configure(bg="#3E2929")
+        self.main_window.configure(bg="#A46D6D")
         
         self.canvas = Canvas(
             self.main_window,
-            bg="#3E2929",
+            bg="#A46D6D",
             height=504,
             width=747,
             bd=0,
@@ -82,10 +81,10 @@ class RecipeApp:
             padx=0,
             pady=0
         )
+        button_1.image = button_image_1
         button_1.place(x=47.0, y=132.0, width=278.0, height=92.0)
 
-        button_image_2 = PhotoImage(
-            file=relative_to_assets("button_2.png"))
+        button_image_2 = load_image(relative_to_assets("button_2.png"))
         button_2 = Button(
             image=button_image_2,
             borderwidth=0,
@@ -98,6 +97,7 @@ class RecipeApp:
             padx=0,  # Remove horizontal padding
             pady=0   # Remove vertical padding
         )
+        button_2.image = button_image_2
         button_2.place(
             x=47.0,
             y=240.0,
@@ -105,8 +105,7 @@ class RecipeApp:
             height=92.0  # Adjusted height
         )
 
-        button_image_3 = PhotoImage(
-            file=relative_to_assets("button_3.png"))
+        button_image_3 = load_image(relative_to_assets("button_3.png"))
         button_3 = Button(
             image=button_image_3,
             borderwidth=0,
@@ -119,6 +118,7 @@ class RecipeApp:
             padx=0,  # Remove horizontal padding
             pady=0   # Remove vertical padding
         )
+        button_3.image = button_image_3
         button_3.place(
             x=47.0,
             y=359.0,
@@ -126,8 +126,8 @@ class RecipeApp:
             height=92.0  # Adjusted height
         )
 
-        button_image_4 = PhotoImage(
-            file=relative_to_assets("button_4.png"))
+        button_image_4 = load_image(relative_to_assets("button_4.png"))
+
         button_4 = Button(
             image=button_image_4,
             borderwidth=0,
@@ -140,6 +140,7 @@ class RecipeApp:
             padx=0,  # Remove horizontal padding
             pady=0   # Remove vertical padding
         )
+        button_4.image = button_image_4
         button_4.place(
             x=395.0,
             y=132.0,
@@ -147,8 +148,7 @@ class RecipeApp:
             height=92.0  # Adjusted height
         )
 
-        button_image_5 = PhotoImage(
-            file=relative_to_assets("button_5.png"))
+        button_image_5 =  load_image(relative_to_assets("button_5.png"))
         button_5 = Button(
             image=button_image_5,
             borderwidth=0,
@@ -161,6 +161,7 @@ class RecipeApp:
             padx=0,  # Remove horizontal padding
             pady=0   # Remove vertical padding
         )
+        button_5.image = button_image_5
         button_5.place(
             x=395.0,
             y=248.0,
@@ -168,8 +169,7 @@ class RecipeApp:
             height=92.0  # Adjusted height
         )
 
-        button_image_6 = PhotoImage(
-            file=relative_to_assets("button_6.png"))
+        button_image_6 =  load_image(relative_to_assets("button_6.png"))
         button_6 = Button(
             image=button_image_6,
             borderwidth=0,
@@ -182,6 +182,7 @@ class RecipeApp:
             padx=0,  # Remove horizontal padding
             pady=0   # Remove vertical padding
         )
+        button_6.image = button_image_6
         button_6.place(
             x=395.0,
             y=355.0,
