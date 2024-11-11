@@ -9,6 +9,8 @@ from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Label, Toplevel
 RECIPE_IMAGE_WIDTH = 200
 RECIPE_IMAGE_HEIGHT = 200
 image_url = "" 
+canvas_width = 747
+center_x = canvas_width / 2
 
 class RecipeApp:
     def __init__(self, recipe_app_key):
@@ -32,9 +34,9 @@ class RecipeApp:
 
         # Search text label
         self.canvas.create_text(
-            121.0,
-            21.0,
-            anchor="nw",
+            center_x, 
+            20.0,
+            anchor="center",
             text="Whats Cookin?",
             fill="#CC9318",
             font=("Montserrat Bold", 36)
@@ -58,7 +60,6 @@ class RecipeApp:
             relief="flat"
         )
         self.search_button.place(x=584.0, y=81.0, width=42.0, height=38.)
-
         self.search_entry.bind("<Return>", self.__on_enter_pressed)
 
         
