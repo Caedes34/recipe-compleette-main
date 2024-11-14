@@ -1,14 +1,13 @@
-import requests 
+import requests
 import webbrowser
 from io import BytesIO
 from PIL import Image, ImageTk
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label, Toplevel, Scrollbar, Frame, Text
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Label, Toplevel, Scrollbar, Frame
 
 # Constants for recipe image dimensions
-RECIPE_IMAGE_WIDTH = 200
-RECIPE_IMAGE_HEIGHT = 200
-image_url = "" 
+RECIPE_IMAGE_WIDTH = 100  # Thumbnail size
+RECIPE_IMAGE_HEIGHT = 100
 canvas_width = 747
 center_x = canvas_width / 2
 
@@ -61,165 +60,25 @@ class RecipeApp:
         self.search_button.place(x=584.0, y=81.0, width=42.0, height=38.0)
         self.search_entry.bind("<Return>", self.__on_enter_pressed)
 
-        def load_image(file_path, size=(278, 92)): 
-            img = Image.open(file_path)
-            img = img.resize(size)  
-            return ImageTk.PhotoImage(img)
-
-        button_image_1 = load_image(relative_to_assets("button_1.png"))
-        button_1 = Button(
-            self.main_window,
-            image=button_image_1,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("button_1 clicked"),
-            relief="flat",
-            bg="#A46D6D",
-            bd=0,
-            padx=0,
-            pady=0
-        )
-        button_1.image = button_image_1
-        button_1.place(x=47.0, y=132.0, width=278.0, height=92.0)
-        
-        button_image_2 = load_image(relative_to_assets("button_2.png"))
-        button_2 = Button(
-            image=button_image_2,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
-            relief="flat",
-            bg="#A46D6D", 
-            activebackground="#A46D6D",  
-            bd=0,  
-            padx=0, 
-            pady=0   
-        )
-        button_2.image = button_image_2
-        button_2.place(
-            x=47.0,
-            y=240.0,
-            width=278.0,  
-            height=92.0  
-        )
-
-        button_image_3 = load_image(relative_to_assets("button_3.png"))
-        button_3 = Button(
-            image=button_image_3,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("button_3 clicked"),
-            relief="flat",
-            bg="#A46D6D",  
-            activebackground="#A46D6D",  
-            bd=0,  
-            padx=0,  
-            pady=0  
-        )
-        button_3.image = button_image_3
-        button_3.place(
-            x=47.0,
-            y=359.0,
-            width=278.0,  
-            height=92.0  
-        )
-
-        button_image_4 = load_image(relative_to_assets("button_4.png"))
-
-        button_4 = Button(
-            image=button_image_4,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("button_4 clicked"),
-            relief="flat",
-            bg="#A46D6D",  
-            activebackground="#A46D6D",
-            bd=0,  
-            padx=0,  
-            pady=0   
-        )
-        button_4.image = button_image_4
-        button_4.place(
-            x=395.0,
-            y=132.0,
-            width=278.0,  
-            height=92.0  
-        )
-
-        button_image_5 =  load_image(relative_to_assets("button_5.png"))
-        button_5 = Button(
-            image=button_image_5,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("button_5 clicked"),
-            relief="flat",
-            bg="#A46D6D",  
-            activebackground="#A46D6D",  
-            bd=0, 
-            padx=0,  
-            pady=0   
-        )
-        button_5.image = button_image_5
-        button_5.place(
-            x=395.0,
-            y=248.0,
-            width=278.0,  
-            height=92.0  
-        )
-
-        button_image_6 =  load_image(relative_to_assets("button_6.png"))
-        button_6 = Button(
-            image=button_image_6,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("button_6 clicked"),
-            relief="flat",
-            bg="#A46D6D",  
-            activebackground="#A46D6D",  
-            bd=0,  
-            padx=0,  
-            pady=0   
-        )
-        button_6.image = button_image_6
-        button_6.place(
-            x=395.0,
-            y=355.0,
-            width=278.0,  
-            height=92.0  
-        )
-
-        # Define other buttons similarly...
-
-    #BACK END STUFFS
+    # BACK END STUFF
     def __on_enter_pressed(self, event):
         self.__run_search_query()
      
     def __run_search_query(self):
         query = self.search_entry.get()
-        recipe = self.__get_recipe(query)
+        recipes = self.__search_recipes(query)
 
         # Open results in a new window
-        if recipe:
-            self.__open_results_window(recipe)
+        if recipes:
+            self.__open_results_window(recipes)
         else:
-            self.__open_results_window(None, message="No Recipe found for search criteria")
+            self.__open_results_window(None, message="No recipes found for your search.")
 
-    def __open_results_window(self, recipe, message=""):
+    def __open_results_window(self, recipes, message=""):
         # Create a new result window
         result_window = Toplevel(self.main_window)
         result_window.geometry("1441x800")
         result_window.configure(bg="#3E2929")
-
-        # "Back" Button
-        back_button = Button(
-            result_window,
-            text="Back",
-            command=result_window.destroy,
-            bg="#A46D6D",
-            fg="white",
-            font=("Montserrat", 12, "bold")
-        )
-        back_button.pack(pady=10, anchor="nw", padx=10)
 
         # Create a frame and canvas for scrolling
         frame = Frame(result_window)
@@ -228,53 +87,93 @@ class RecipeApp:
         canvas = Canvas(frame, bg="#3E2929", bd=0, highlightthickness=0, relief="ridge")
         canvas.pack(side="left", fill="both", expand=True)
 
-        # Create the scrollbar, pack it on the right side of the frame
-        scrollbar = Scrollbar(frame, orient="vertical", command=canvas.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar = Scrollbar(frame, orient="vertical", command=canvas.yview, 
+                      bg="#555555",  # Color of the scrollbar itself
+                      troughcolor="#888888",  # Color of the trough (area the slider moves in)
+                      width=15)  # Increase the width to make the scrollbar more prominent
+        scrollbar.pack(side="left", fill="y")
+
+
         canvas.config(yscrollcommand=scrollbar.set)
 
         # Create a frame inside the canvas to hold the recipe content
         content_frame = Frame(canvas, bg="#3E2929")
         canvas.create_window((0, 0), window=content_frame, anchor="nw")
+        
+        def go_back():
+            result_window.destroy()  # Close the results window and return to main search screen
 
-        if recipe:
-            recipe_image = recipe['image']
-            recipe_url = recipe.get('sourceUrl', "")
+        back_button = Button(content_frame, text="Back", command=go_back, bg="#f0ad4e", fg="white", relief="flat")
+        back_button.grid(column=0, row=0, padx=20, pady=20)
 
-            # Display recipe image
-            self.__show_image(content_frame, recipe_image)
+        if recipes:
+            row = 1
+            for recipe in recipes:
+                # Create a frame for each recipe to hold the image and title, and center the contents
+                recipe_frame = Frame(content_frame, bg="#3E2929")
+                recipe_frame.grid(row=row, column=0, padx=20, pady=10, sticky="nsew")
 
-            # Display ingredients and recipe details
-            self.__get_ingredients(content_frame, recipe)
+                # Centering the image and title within the recipe frame
+                self.__show_recipe_thumbnail(recipe_frame, recipe['image'])
+                
+                # Create a button for the recipe title and center it
+                recipe_button = Button(recipe_frame, text=recipe['title'], bg="#ffdada", relief="flat", command=lambda r=recipe: self.__open_recipe_details(r))
+                recipe_button.pack(side="top", padx=10, pady=10, anchor="center")
 
-            # Recipe link button
-            def __open_link():
-                if recipe_url:
-                    webbrowser.open(recipe_url)
-
-            recipe_button = Button(content_frame, text="Recipe Link", highlightbackground="#ea86b6", command=__open_link)
-            recipe_button.grid(column=1, row=7, pady=10)
+                row += 1
         else:
-            # Display message if no recipe is found
             no_recipe_label = Label(content_frame, text=message, bg="#3E2929", fg="white")
-            no_recipe_label.grid(column=1, row=4, pady=10)
-
-            placeholder_image_url = "https://www.creta-gel.com/page-404.html"  
-            self.__show_image(content_frame, placeholder_image_url)
+            no_recipe_label.grid(column=0, row=1, pady=10)
 
         content_frame.update_idletasks()  
         canvas.config(scrollregion=canvas.bbox("all"))
 
-    def __get_recipe(self, query):
+    def __open_recipe_details(self, recipe):
+        # Retrieve full recipe details including ingredients
+        full_recipe = self.__get_recipe_details(recipe['id'])
+
+        if full_recipe:
+            # Create a new window to show recipe details
+            recipe_window = Toplevel(self.main_window)
+            recipe_window.geometry("1441x800")
+            recipe_window.configure(bg="#3E2929")
+
+            content_frame = Frame(recipe_window, bg="#3E2929")
+            content_frame.pack(fill="both", expand=True)
+
+            # Show image
+            self.__show_image(content_frame, full_recipe['image'])
+
+            # Show ingredients and details
+            self.__get_ingredients(content_frame, full_recipe)
+
+            # Show the recipe source link button
+            def __open_link():
+                webbrowser.open(full_recipe.get('sourceUrl', ''))
+
+            recipe_button = Button(content_frame, text="Recipe Link", highlightbackground="#ea86b6", command=__open_link)
+            recipe_button.grid(row=3, column=0, pady=10)  # Use grid for positioning
+        else:
+            print("Failed to retrieve full recipe details.")
+
+    def __search_recipes(self, query):
         url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&apiKey={self.recipe_app_key}"
         response = requests.get(url)
 
         if response.status_code == 200:
             data = response.json()
             if data.get('results'):
-                recipe_id = data['results'][0]['id']
-                return self.__get_recipe_details(recipe_id)
-        return None
+                # Return simplified recipe info (id, title, and image)
+                recipes = [
+                    {
+                        'id': recipe['id'],
+                        'title': recipe['title'],
+                        'image': recipe['image']
+                    }
+                    for recipe in data['results']
+                ]
+                return recipes
+        return []
 
     def __get_recipe_details(self, recipe_id):
         url = f"https://api.spoonacular.com/recipes/{recipe_id}/information?apiKey={self.recipe_app_key}"
@@ -284,19 +183,9 @@ class RecipeApp:
             return response.json()
         return None
 
-    def __show_image(self, frame, image_url):
-        response = requests.get(image_url)
-        img = Image.open(BytesIO(response.content))
-        img = img.resize((RECIPE_IMAGE_WIDTH, RECIPE_IMAGE_HEIGHT))
-        image = ImageTk.PhotoImage(img)
-
-        holder = Label(frame, image=image)
-        holder.photo = image  
-        holder.grid(column=1, row=6, pady=10)
-
     def __get_ingredients(self, frame, recipe):
         ingredients_text = Text(frame, height=15, width=50, bg="#ffdada")
-        ingredients_text.grid(column=1, row=4, pady=10)
+        ingredients_text.grid(column=0, row=1, pady=10, padx=20) 
         ingredients_text.delete("1.0", "end")
 
         # Display recipe details and ingredients
@@ -307,6 +196,29 @@ class RecipeApp:
         if 'extendedIngredients' in recipe:
             for ingredient in recipe['extendedIngredients']:
                 ingredients_text.insert("end", "\n- " + ingredient['original'])
+
+    def __show_image(self, frame, image_url):
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+        img = img.resize((RECIPE_IMAGE_WIDTH, RECIPE_IMAGE_HEIGHT))
+        image = ImageTk.PhotoImage(img)
+
+        holder = Label(frame, image=image)
+        holder.photo = image  # Keep a reference to the image
+        holder.grid(row=0, column=0, pady=10, padx=14)  # Use grid for proper positioning
+
+
+    def __show_recipe_thumbnail(self, frame, image_url):
+        # Load and resize the image to create a thumbnail
+        response = requests.get(image_url)
+        img = Image.open(BytesIO(response.content))
+        img = img.resize((RECIPE_IMAGE_WIDTH, RECIPE_IMAGE_HEIGHT))  # Resize for thumbnail display
+        image = ImageTk.PhotoImage(img)
+
+        # Display the image as a thumbnail, centered in the frame
+        label = Label(frame, image=image)
+        label.photo = image  # Keep a reference to the image to avoid garbage collection
+        label.pack(side="top", pady=10, anchor="center")
 
     def run_app(self):
         self.main_window.resizable(False, False)
