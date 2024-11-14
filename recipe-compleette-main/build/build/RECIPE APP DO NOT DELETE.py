@@ -60,6 +60,134 @@ class RecipeApp:
         self.search_button.place(x=584.0, y=81.0, width=42.0, height=38.0)
         self.search_entry.bind("<Return>", self.__on_enter_pressed)
 
+        def load_image(file_path, size=(278, 92)): 
+                img = Image.open(file_path)
+                img = img.resize(size)  
+                return ImageTk.PhotoImage(img)
+
+        button_image_1 = load_image(relative_to_assets("button_1.png"))
+        button_1 = Button(
+                self.main_window,
+                image=button_image_1,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("button_1 clicked"),
+                relief="flat",
+                bg="#A46D6D",
+                bd=0,
+                padx=0,
+                pady=0
+            )
+        button_1.image = button_image_1
+        button_1.place(x=47.0, y=132.0, width=278.0, height=92.0)
+
+        button_image_2 = load_image(relative_to_assets("button_2.png"))
+        button_2 = Button(
+                image=button_image_2,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("button_2 clicked"),
+                relief="flat",
+                bg="#A46D6D", 
+                activebackground="#A46D6D",  
+                bd=0,  
+                padx=0, 
+                pady=0   
+            )
+        button_2.image = button_image_2
+        button_2.place(
+                x=47.0,
+                y=240.0,
+                width=278.0,  
+                height=92.0  
+            )
+
+        button_image_3 = load_image(relative_to_assets("button_3.png"))
+        button_3 = Button(
+                image=button_image_3,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("button_3 clicked"),
+                relief="flat",
+                bg="#A46D6D",  
+                activebackground="#A46D6D",  
+                bd=0,  
+                padx=0,  
+                pady=0  
+            )
+        button_3.image = button_image_3
+        button_3.place(
+                x=47.0,
+                y=359.0,
+                width=278.0,  
+                height=92.0  
+            )
+
+        button_image_4 = load_image(relative_to_assets("button_4.png"))
+        button_4 = Button(
+                image=button_image_4,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("button_4 clicked"),
+                relief="flat",
+                bg="#A46D6D",  
+                activebackground="#A46D6D",
+                bd=0,  
+                padx=0,  
+                pady=0   
+            )
+        button_4.image = button_image_4
+        button_4.place(
+                x=395.0,
+                y=132.0,
+                width=278.0,  
+                height=92.0  
+            )
+
+        button_image_5 =  load_image(relative_to_assets("button_5.png"))
+        button_5 = Button(
+                image=button_image_5,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("button_5 clicked"),
+                relief="flat",
+                bg="#A46D6D",  
+                activebackground="#A46D6D",  
+                bd=0, 
+                padx=0,  
+                pady=0   
+            )
+        button_5.image = button_image_5
+        button_5.place(
+                x=395.0,
+                y=248.0,
+                width=278.0,  
+                height=92.0  
+            )
+
+        button_image_6 =  load_image(relative_to_assets("button_6.png"))
+        button_6 = Button(
+                image=button_image_6,
+                borderwidth=0,
+                highlightthickness=0,
+                command=lambda: print("button_6 clicked"),
+                relief="flat",
+                bg="#A46D6D",  
+                activebackground="#A46D6D",  
+                bd=0,  
+                padx=0,  
+                pady=0   
+            )
+        button_6.image = button_image_6
+        button_6.place(
+                x=395.0,
+                y=355.0,
+                width=278.0,  
+                height=92.0  
+            )
+    
+    
+    
     # BACK END STUFF
     def __on_enter_pressed(self, event):
         self.__run_search_query()
@@ -127,6 +255,13 @@ class RecipeApp:
 
         content_frame.update_idletasks()  
         canvas.config(scrollregion=canvas.bbox("all"))
+        
+    # Bind mouse wheel scrolling
+        def on_mouse_wheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        # Windows
+        result_window.bind_all("<MouseWheel>", on_mouse_wheel)          
 
     def __open_recipe_details(self, recipe):
         # Retrieve full recipe details including ingredients
