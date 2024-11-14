@@ -225,7 +225,7 @@ class RecipeApp:
         canvas.config(yscrollcommand=scrollbar.set)
 
         # Create a frame inside the canvas to hold the recipe content
-        content_frame = Frame(canvas, bg="#3E2929")
+        content_frame = Frame(canvas, bg="#3E2929", width=1400, height=800)
         canvas.create_window((0, 0), window=content_frame, anchor="nw")
         
         def go_back():
