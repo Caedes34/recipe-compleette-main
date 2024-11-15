@@ -413,7 +413,7 @@ class RecipeApp:
 
 # Helper function to manage asset paths
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\angel\Downloads\recipe-compleette-main-main\recipe-compleette-main\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\angel\Downloads\recipe-compleette-main-main\recipe-compleette-main\build\assets")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
