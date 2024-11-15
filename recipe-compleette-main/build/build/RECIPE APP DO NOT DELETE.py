@@ -4,7 +4,7 @@ from io import BytesIO
 from PIL import Image, ImageTk
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Label, Toplevel, Scrollbar, Frame
-
+import re
 # Constants for recipe image dimensions
 RECIPE_IMAGE_WIDTH = 200  # Thumbnail size
 RECIPE_IMAGE_HEIGHT = 200  # Thumbnail size
@@ -73,7 +73,7 @@ class RecipeApp:
                 image=button_image_1,
                 borderwidth=0,
                 highlightthickness=0,
-                command=lambda:  self.__search_and_display_results("Soups"),
+                command=lambda:  self.__search_and_display_results("Soup"),
                 relief="flat",
                 bg="#A46D6D",
                 bd=0,
@@ -172,7 +172,7 @@ class RecipeApp:
                 image=button_image_6,
                 borderwidth=0,
                 highlightthickness=0,
-                command=lambda: self.__search_and_display_results("snacks"),
+                command=lambda: self.__search_and_display_results("Snacks"),
                 relief="flat",
                 bg="#A46D6D",  
                 activebackground="#A46D6D",  
@@ -261,12 +261,15 @@ class RecipeApp:
                     command=lambda r=recipe: self.__open_recipe_details(r)  # Open recipe details when clicked
                 )
                 recipe_button.pack(side="top", padx=10, pady=10, anchor="center")
+
                 row += 1
+            # ---- Back Button Code ----
+            back_button = Button(content_frame, text="Back", highlightbackground="#ea86b6", command=result_window.destroy)
+            back_button.place(x=10, y=10)         
 
-        # Update the scrollable region dynamically
-        content_frame.update_idletasks()
+        content_frame.update_idletasks()  
         canvas.config(scrollregion=canvas.bbox("all"))
-
+         
     # Bind mouse wheel scrolling
         def on_mouse_wheel(event):
             canvas.yview_scroll(int(-1*(event.delta/120)), "units")
@@ -285,7 +288,7 @@ class RecipeApp:
             recipe_window.configure(bg="#FDFAF5")
 
             content_frame = Frame(recipe_window, bg="#FDFAF5")
-            content_frame.pack(fill="both", expand=True)
+            content_frame.pack(fill="both", expand=False)
 
             # Show image
             self.__show_image(content_frame, full_recipe['image'])
@@ -334,7 +337,7 @@ class RecipeApp:
     def __show_recipe_details(self, frame, recipe):
         
         title_label = Label(frame, text=recipe['title'], font=("Helvetica", 18, "bold"), bg="#FDFAF5")
-        title_label.grid(row=0, column=0, columnspan=10, pady=10)  # Columnspan makes it center aligned
+        title_label.grid(row=0, column=0, columnspan=3, pady=10, sticky="n")  # Columnspan makes it center aligned
         # Create a single Text widget to display all details
         recipe_details_text = Text(frame, height=30, width=50, bg="#FDFAF5", wrap="word")
         recipe_details_text.grid(column=10, row=0, pady=10, padx=12)  # Adjust positioning as needed
@@ -346,20 +349,21 @@ class RecipeApp:
         recipe_details_text.insert("end", f"\n🍳 Cook time: {recipe['cookingMinutes']} minutes\n")
 
         if 'extendedIngredients' in recipe:
-            recipe_details_text.insert("end", "\nIngredients:\n")
+            recipe_details_text.insert("end", "\n Ingredients: \n")
             for ingredient in recipe['extendedIngredients']:
-                recipe_details_text.insert("end", f"- {ingredient['original']}\n")
+                recipe_details_text.insert("end", f"\n {ingredient['original']}\n")
 
-            # Create a separate Text widget for instructions
-        instructions_text = Text(frame, height=15, width=50, bg="#FDFAF5", wrap="word")
-        instructions_text.grid(column=1, row=1, pady=5, padx=12)  # Position below recipe details
-        instructions_text.delete("1.0", "end")  # Clear any previous content
+         # Create a separate Text widget for instructions
+            instructions_text = Text(frame, height=15, width=50, bg="#FDFAF5", wrap="word")
+            instructions_text.place(x=800, y=12)  # Position below recipe details
+            instructions_text.delete("1.0", "end")  # Clear any previous content
 
         # Display instructions if available
         if 'instructions' in recipe:
-            instructions_text.insert("end", f"\nInstructions:\n{recipe['instructions']}\n")
-        else:
-            instructions_text.insert("end", "\nNo instructions available.\n")
+            instructions_text.insert("end", "\n Instructions: \n")
+            instructions_text.insert("end", f"\n {recipe['instructions']} minutes \n")
+        else: 
+            instructions_text.insert("end", "\n No instructions available.\n")
                 
     #shows image
     
@@ -416,7 +420,7 @@ def relative_to_assets(path: str) -> Path:
 
 # Main execution
 if __name__ == "__main__":
-    recipe_app_key = "6f0bcbc3250f430486c88975286e8ebd"  
+    recipe_app_key = "8b4d854f3bb446afa28109f20019f126"  
     recipe_app = RecipeApp(recipe_app_key)
     recipe_app.run_app()
 
